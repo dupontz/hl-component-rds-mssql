@@ -51,11 +51,13 @@ CloudFormation do
     Tags tags + [{ Key: 'Name', Value: FnJoin('-', [ Ref(:EnvironmentName), component_name, 'subnet-group' ])}]
   end
 
-  RDS_DBParameterGroup 'ParametersRDS' do
-    Description FnJoin(' ', [ Ref(:EnvironmentName), component_name, 'parameter group' ])
-    Family family
-    Parameters parameters if defined? parameters
-    Tags tags + [{ Key: 'Name', Value: FnJoin('-', [ Ref(:EnvironmentName), component_name, 'parameter-group' ])}]
+  if !engine.include? "custom"
+    RDS_DBParameterGroup 'ParametersRDS' do
+      Description FnJoin(' ', [ Ref(:EnvironmentName), component_name, 'parameter group' ])
+      Family family
+      Parameters parameters if defined? parameters
+      Tags tags + [{ Key: 'Name', Value: FnJoin('-', [ Ref(:EnvironmentName), component_name, 'parameter-group' ])}]
+    end
   end
 
   if defined?(native_backup_restore) and native_backup_restore
@@ -124,12 +126,13 @@ CloudFormation do
   RDS_DBInstance 'RDS' do
     AllowMajorVersionUpgrade allow_major_version_upgrade unless allow_major_version_upgrade.nil?
     DeletionPolicy deletion_policy if defined? deletion_policy
+    CustomIAMInstanceProfile custom_IAM_instance_profile if defined? custom_IAM_instance_profile
     DBInstanceClass Ref('RDSInstanceType')
     AllocatedStorage Ref('RDSAllocatedStorage')
     StorageType 'gp2'
     Engine engine
     EngineVersion engine_version
-    DBParameterGroupName Ref('ParametersRDS')
+    DBParameterGroupName Ref('ParametersRDS') if !engine.include?("custom") 
     MasterUsername  instance_username
     MasterUserPassword instance_password
     DBSnapshotIdentifier  Ref('RDSSnapshotID')
