@@ -74,6 +74,7 @@ CloudFormation do
     end
 
     IAM_InstanceProfile('InstanceProfile') do
+      InstanceProfileName FnSub("AWSRDSCustom-${EnvironmentName}-#{external_parameters[:component_name]}") 
       Path '/'
       Roles [Ref('Role')]
     end
