@@ -70,7 +70,7 @@ CloudFormation do
       RoleName FnJoin(' ', [ "AWSRDSCustom-", Ref('EnvironmentName'), component_name ])
       # AssumeRolePolicyDocument service_role_assume_policy(iam_services)
       Path '/'
-      ManagedPolicyArns managed_iam_policies if managed_iam_policies.any?
+      # ManagedPolicyArns managed_iam_policies if managed_iam_policies.any?
     end
 
     IAM_InstanceProfile('InstanceProfile') do
