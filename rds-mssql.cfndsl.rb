@@ -67,7 +67,7 @@ CloudFormation do
     managed_iam_policies = external_parameters.fetch(:managed_iam_policies, [])
 
     Role('Role') do
-      RoleName FnJoin(' ', "AWSRDSCustom-", [ Ref('EnvironmentName'), component_name ])
+      RoleName FnJoin(' ', [ "AWSRDSCustom-", Ref('EnvironmentName'), component_name ])
       AssumeRolePolicyDocument service_role_assume_policy(iam_services)
       Path '/'
       ManagedPolicyArns managed_iam_policies if managed_iam_policies.any?
