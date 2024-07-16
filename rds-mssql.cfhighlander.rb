@@ -4,7 +4,7 @@ CfhighlanderTemplate do
     Description "#{component_name} - #{component_version}"
     
     ComponentVersion component_version
-  
+    DependsOn 'vpc'
     Parameters do
       ComponentParam 'VPCId', type: 'AWS::EC2::VPC::Id'
       ComponentParam 'StackOctet', isGlobal: true
