@@ -58,6 +58,25 @@ CloudFormation do
       Parameters parameters if defined? parameters
       Tags tags + [{ Key: 'Name', Value: FnJoin('-', [ Ref(:EnvironmentName), component_name, 'parameter-group' ])}]
     end
+
+    policies = []
+    iam_policies.each do |name,policy|
+      policies << iam_policy_allow(name,policy['action'],policy['resource'] || '*')
+    end if defined? iam_policies
+
+    managed_iam_policies = external_parameters.fetch(:managed_iam_policies, [])
+
+    Role('Role') do
+      RoleName AWSRDSCustom
+      AssumeRolePolicyDocument service_role_assume_policy(iam_services)
+      Path '/'
+      ManagedPolicyArns managed_iam_policies if managed_iam_policies.any?
+    end
+
+    IAM_InstanceProfile('InstanceProfile') do
+      Path '/'
+      Roles [Ref('Role')]
+    end
   end
 
   if defined?(native_backup_restore) and native_backup_restore
@@ -126,7 +145,7 @@ CloudFormation do
   RDS_DBInstance 'RDS' do
     AllowMajorVersionUpgrade allow_major_version_upgrade unless allow_major_version_upgrade.nil?
     DeletionPolicy deletion_policy if defined? deletion_policy
-    CustomIAMInstanceProfile custom_IAM_instance_profile if defined? custom_IAM_instance_profile
+    CustomIAMInstanceProfile Ref('InstanceProfile') if !engine.include?("custom"
     DBInstanceClass Ref('RDSInstanceType')
     AllocatedStorage Ref('RDSAllocatedStorage')
     StorageType 'gp2'
