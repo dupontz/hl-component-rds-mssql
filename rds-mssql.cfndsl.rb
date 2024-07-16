@@ -145,7 +145,7 @@ CloudFormation do
   RDS_DBInstance 'RDS' do
     AllowMajorVersionUpgrade allow_major_version_upgrade unless allow_major_version_upgrade.nil?
     DeletionPolicy deletion_policy if defined? deletion_policy
-    CustomIAMInstanceProfile Ref('InstanceProfile') if !engine.include?("custom")
+    CustomIAMInstanceProfile Ref('InstanceProfile') if engine.include?("custom")
     DBInstanceClass Ref('RDSInstanceType')
     AllocatedStorage Ref('RDSAllocatedStorage')
     StorageType 'gp2'
