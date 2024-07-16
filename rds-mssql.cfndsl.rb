@@ -58,7 +58,7 @@ CloudFormation do
       Parameters parameters if defined? parameters
       Tags tags + [{ Key: 'Name', Value: FnJoin('-', [ Ref(:EnvironmentName), component_name, 'parameter-group' ])}]
     end
-
+  else
     policies = []
     iam_policies.each do |name,policy|
       policies << iam_policy_allow(name,policy['action'],policy['resource'] || '*')
