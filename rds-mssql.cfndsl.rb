@@ -183,6 +183,11 @@ CloudFormation do
     KmsKeyId kms_key_id if (defined? kms_key_id) && (storage_encrypted == true)
   end
 
+  Output(:InstanceId) {
+    Value(Ref(:RDS))
+    Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-InstanceId")
+  }
+
   record = defined?(dns_record) ? dns_record : 'mssql'
 
   Route53_RecordSet('DatabaseIntHostRecord') do
