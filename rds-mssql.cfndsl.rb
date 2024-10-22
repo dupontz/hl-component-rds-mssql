@@ -8,10 +8,7 @@ CloudFormation do
 
   extra_tags.each { |key,value| tags << { Key: key, Value: value } } if defined? extra_tags
 
-  Condition("UseNLB", FnAnd([
-    FnEquals(Ref('RegisterTargetGroup'), 'true'),
-    FnNot(FnEquals(Ref('ParentIAMRole'), ''))
-  ]))
+
 
   ingress = []
   security_group_rules.each do |rule|
