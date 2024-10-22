@@ -48,7 +48,9 @@ storage_encrypted: false
 
 #parameter to allow major version upgrades
 #allow_major_version_upgrade: true
-route53_custom_resources:
+
+disable_custom_resources: false
+tg_custom_resources:
   custom_policies:
     ec2-tg:
       action:
