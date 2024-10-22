@@ -8,6 +8,11 @@ CloudFormation do
 
   extra_tags.each { |key,value| tags << { Key: key, Value: value } } if defined? extra_tags
 
+  Condition("UseNLB", FnAnd([
+    FnEquals(Ref('RegisterTargetGroup'), 'true'),
+    FnNot(FnEquals(Ref('ParentIAMRole'), ''))
+  ]))
+
   ingress = []
   security_group_rules.each do |rule|
     sg_rule = {
@@ -190,12 +195,27 @@ CloudFormation do
 
   record = defined?(dns_record) ? dns_record : 'mssql'
 
-  Route53_RecordSet('DatabaseIntHostRecord') do
-    HostedZoneName FnJoin('', [ Ref('EnvironmentName'), '.', Ref('DnsDomain'), '.'])
-    Name FnJoin('', [ record, '.', Ref('EnvironmentName'), '.', Ref('DnsDomain'), '.' ])
-    Type 'CNAME'
-    TTL 60
-    ResourceRecords [ FnGetAtt('RDS','Endpoint.Address') ]
-  end
+  if engine.include?("custom")
+
+    Resource("CustomEc2InstanceId") do
+      Type 'Custom::RegisterTG'
+      Property 'ServiceToken',FnGetAtt('RdsTargetGroupCR','Arn')
+      Property 'AwsRegion', Ref('AWS::Region')
+      Property 'RDSInstanceId',Ref(:RDS)
+    end unless disable_custom_resources
+
+    Route53_RecordSet('DatabaseIntHostRecord') do
+      HostedZoneName FnJoin('', [ Ref('EnvironmentName'), '.', Ref('DnsDomain'), '.'])
+      Name FnJoin('', [ record, '.', Ref('EnvironmentName'), '.', Ref('DnsDomain'), '.' ])
+      Type 'CNAME'
+      TTL 60
+      ResourceRecords [ FnGetAtt('RDS','Endpoint.Address') ]
+    end
+
+    Output(:Ec2InstanceId) {
+      Value(FnGetAtt( 'CustomEc2InstanceId','SecurityGroup-Name')   )
+      Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-Ec2InstanceId")
+    }
+  }
 
 end

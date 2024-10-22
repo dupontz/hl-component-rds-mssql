@@ -18,5 +18,8 @@ CfhighlanderTemplate do
       ComponentParam 'SubnetIds', type: 'CommaDelimitedList'
       ComponentParam 'DatabaseBucket' if defined?(native_backup_restore) and native_backup_restore
     end
+
+    LambdaFunctions 'tg_custom_resources' unless disable_custom_resources
+
 end
 
