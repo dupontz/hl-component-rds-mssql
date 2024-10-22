@@ -216,6 +216,6 @@ CloudFormation do
       Value(FnGetAtt( 'CustomEc2InstanceId','SecurityGroup-Name')   )
       Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-Ec2InstanceId")
     }
-  }
+  end
 
 end
