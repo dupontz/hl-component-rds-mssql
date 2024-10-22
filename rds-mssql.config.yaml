@@ -50,6 +50,7 @@ storage_encrypted: false
 #allow_major_version_upgrade: true
 
 disable_custom_resources: false
+
 tg_custom_resources:
   custom_policies:
     ec2-tg:
