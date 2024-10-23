@@ -17,9 +17,9 @@ def lambda_handler(event, context):
                 # 1. retrieve resource reference ID or Name
                 ResourceRef=event['ResourceProperties']['ResourceRef']
                 # 2. retrieve boto3 client    
-                client = boto3.client('ec2')
+                # client = boto3.client('ec2')
                 # 3. Invoke describe/retrieve function using ResourceRef
-                response = client.describe_security_groups(GroupIds=[ResourceRef])
+                # response = client.describe_security_groups(GroupIds=[ResourceRef])
                 # 4. Parse and return required attributes 
                 responseData = {}
                 responseData['SecurityGroup-Name']= 'TODO'
