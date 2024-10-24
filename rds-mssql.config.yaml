@@ -81,4 +81,4 @@ tg_custom_resources:
       environment:
         ENVIRONMENT_NAME:
           Ref: EnvironmentName
-      package_cmd: 'pip3 install -r requirements.txt -t .'
+      package_cmd: "pip3 install -r requirements.txt -t ."
