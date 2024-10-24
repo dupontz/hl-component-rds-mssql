@@ -21,7 +21,7 @@ def lambda_handler(event, context):
             cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
         if event['RequestType'] in ["Create", "Update"]:                      
             # 1. retrieve resource reference ID or Name
-            ResourceRef=event['ResourceProperties']['ResourceRef']
+            ResourceRef=event['ResourceProperties']['RDSInstanceId']
             # 2. retrieve boto3 client    
             # client = boto3.client('ec2')
             # 3. Invoke describe/retrieve function using ResourceRef
