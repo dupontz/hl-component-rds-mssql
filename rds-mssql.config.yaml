@@ -78,6 +78,7 @@ tg_custom_resources:
       runtime: python3.11
       timeout: 600
       role: TGResource
+      package_cmd: 'pip install -r requirements.txt -t .'
       environment:
         ENVIRONMENT_NAME:
           Ref: EnvironmentName
