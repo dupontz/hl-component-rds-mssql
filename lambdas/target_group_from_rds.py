@@ -56,8 +56,8 @@ def lambda_handler(event, context):
             logger.info(f'found instance:{response}')
 
             responseData = {}
-            responseData['SecurityGroup-Name'] = response
-            logger.info('Retrieved Ec2InstanceId: ')
+            responseData['Ec2InstanceId'] = response
+            logger.info('Retrieved Ec2InstanceId! ')
             cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
         else:
             logger.info('Unexpected RequestType!') 
