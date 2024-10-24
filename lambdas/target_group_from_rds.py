@@ -12,6 +12,35 @@ import cfnresponse
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+def get_instance_id_by_name(instance_name):
+    # Create an EC2 client
+    print(f"instance_name: {instance_name}")
+    ec2 = boto3.client('ec2')
+
+    # Describe instances with filters for the 'Name' tag
+    response = ec2.describe_instances(
+        Filters=[
+            {
+                'Name': 'tag:Name',
+                'Values': [instance_name]
+            }
+        ]
+    )
+
+    # Extract instance ID(s)
+    instances = response['Reservations']
+    instance_ids = []
+
+    for reservation in instances:
+        for instance in reservation['Instances']:
+            instance_ids.append(instance['InstanceId'])
+
+    if not instance_ids:
+        print(f"No instances found with name {instance_name}")
+        return None
+
+    return instance_ids
+
 def lambda_handler(event, context):
     logger.info('got event {}'.format(event))  
     try: 
@@ -20,16 +49,15 @@ def lambda_handler(event, context):
             logger.info('Incoming RequestType: Delete operation') 
             cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
         if event['RequestType'] in ["Create", "Update"]:                      
-            # 1. retrieve resource reference ID or Name
             ResourceRef=event['ResourceProperties']['RDSInstanceId']
-            # 2. retrieve boto3 client    
-            # client = boto3.client('ec2')
-            # 3. Invoke describe/retrieve function using ResourceRef
-            # response = client.describe_security_groups(GroupIds=[ResourceRef])
-            # 4. Parse and return required attributes 
+            ec2_name = 'do-not-delete-rds-custom-' + ResourceRef
+            response = get_instance_id_by_name(ec2_name)
+
+            logger.info(f'found instance:{response}')
+
             responseData = {}
-            responseData['SecurityGroup-Name']= 'TODO'
-            logger.info('Retrieved SecurityGroup-Name!')
+            responseData['Ec2InstanceId'] = response
+            logger.info('Retrieved Ec2InstanceId: ')
             cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
         else:
             logger.info('Unexpected RequestType!') 
