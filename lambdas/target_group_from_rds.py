@@ -39,7 +39,7 @@ def get_instance_id_by_name(instance_name):
         print(f"No instances found with name {instance_name}")
         return None
 
-    if instance_ids > 1:
+    if len(instance_ids) > 1:
         print(f"More than one instance found with name {instance_name}")
         return None
 
