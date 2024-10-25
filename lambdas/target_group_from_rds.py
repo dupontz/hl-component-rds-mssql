@@ -39,7 +39,11 @@ def get_instance_id_by_name(instance_name):
         print(f"No instances found with name {instance_name}")
         return None
 
-    return instance_ids
+    if instance_ids > 1:
+        print(f"More than one instance found with name {instance_name}")
+        return None
+
+    return instance_ids[0]
 
 def lambda_handler(event, context):
     logger.info('got event {}'.format(event))  
