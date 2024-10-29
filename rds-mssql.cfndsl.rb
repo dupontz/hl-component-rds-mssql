@@ -2,6 +2,8 @@ CloudFormation do
 
   Description "#{component_name} - #{component_version}"
   
+  Condition("UseUsernameAndPassword", FnEquals(Ref(:SnapshotID), ''))
+
   tags = []
   tags << { Key: 'Environment', Value: Ref(:EnvironmentName) }
   tags << { Key: 'EnvironmentType', Value: Ref(:EnvironmentType) }
@@ -155,8 +157,8 @@ CloudFormation do
     Engine engine
     EngineVersion engine_version
     DBParameterGroupName Ref('ParametersRDS') if !engine.include?("custom") 
-    MasterUsername  instance_username
-    MasterUserPassword instance_password
+    MasterUsername  FnIf('UseUsernameAndPassword', instance_username, Ref('AWS::NoValue'))
+    MasterUserPassword  FnIf('UseUsernameAndPassword', instance_password, Ref('AWS::NoValue'))
     DBSnapshotIdentifier  Ref('RDSSnapshotID')
     DBSubnetGroupName  Ref('SubnetGroupRDS')
     VPCSecurityGroups [Ref('SecurityGroupRDS')]
