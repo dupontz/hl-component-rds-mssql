@@ -2,7 +2,7 @@ CloudFormation do
 
   Description "#{component_name} - #{component_version}"
   
-  Condition("UseUsernameAndPassword", FnEquals(Ref(:SnapshotID), ''))
+  Condition("UseUsernameAndPassword", FnEquals(Ref(:RDSSnapshotID), ''))
 
   tags = []
   tags << { Key: 'Environment', Value: Ref(:EnvironmentName) }
