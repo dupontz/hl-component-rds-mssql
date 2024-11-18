@@ -14,11 +14,20 @@ CloudFormation do
 
   ingress = []
   security_group_rules.each do |rule|
-    sg_rule = {
-      FromPort: 1433,
-      IpProtocol: 'TCP',
-      ToPort: 1433,
-    }
+
+    if rule['from_port'] and rule['to_port']
+      sg_rule = {
+        FromPort: rule['from_port'],
+        IpProtocol: 'TCP',
+        ToPort: rule['to_port'],
+      }
+    else
+      sg_rule = {
+        FromPort: 1433,
+        IpProtocol: 'TCP',
+        ToPort: 1433,
+      }
+    end
     if rule['security_group_id']
       sg_rule['SourceSecurityGroupId'] = FnSub(rule['security_group_id'])
     else 
@@ -75,7 +84,6 @@ CloudFormation do
       AssumeRolePolicyDocument service_role_assume_policy(iam_services)
       Path '/'
       ManagedPolicyArns managed_iam_policies if managed_iam_policies.any?
-      Policies(policies)
     end
 
     IAM_InstanceProfile('InstanceProfile') do
