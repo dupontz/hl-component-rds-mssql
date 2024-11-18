@@ -75,6 +75,7 @@ CloudFormation do
       AssumeRolePolicyDocument service_role_assume_policy(iam_services)
       Path '/'
       ManagedPolicyArns managed_iam_policies if managed_iam_policies.any?
+      Policies(policies)
     end
 
     IAM_InstanceProfile('InstanceProfile') do
