@@ -156,6 +156,7 @@ CloudFormation do
   backup_retention_period = external_parameters.fetch(:backup_retention_period, nil)
   allow_major_version_upgrade = external_parameters.fetch(:allow_major_version_upgrade, nil)
   storage_type = external_parameters.fetch(:storage_type, 'gp2')
+  iops = external_parameters.fetch(:iops, nil)
 
   RDS_DBInstance 'RDS' do
     AllowMajorVersionUpgrade allow_major_version_upgrade unless allow_major_version_upgrade.nil?
@@ -164,6 +165,7 @@ CloudFormation do
     DBInstanceClass Ref('RDSInstanceType')
     AllocatedStorage Ref('RDSAllocatedStorage')
     StorageType storage_type
+    Iops iops if storage_type.include?("io") 
     Engine engine
     EngineVersion engine_version
     DBParameterGroupName Ref('ParametersRDS') if !engine.include?("custom") 
