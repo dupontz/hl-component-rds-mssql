@@ -39,11 +39,11 @@ def get_instance_id_by_name(instance_name):
         print(f"No instances found with name {instance_name}")
         return None
 
-    if len(instance_ids) > 1:
-        print(f"More than one instance found with name {instance_name}")
-        return None
+    # if len(instance_ids) > 1:
+    #     print(f"More than one instance found with name {instance_name}")
+    #     return None
 
-    return instance_ids[0]
+    return instance_ids
 
 def lambda_handler(event, context):
     logger.info('got event {}'.format(event))  
@@ -60,7 +60,7 @@ def lambda_handler(event, context):
             logger.info(f'found instance:{response}')
 
             responseData = {}
-            responseData['Ec2InstanceId'] = response
+            responseData['Ec2InstanceIds'] = response
             logger.info('Retrieved Ec2InstanceId! ')
             cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
         else:
