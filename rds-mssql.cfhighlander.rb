@@ -5,6 +5,7 @@ CfhighlanderTemplate do
     
     ComponentVersion component_version
     DependsOn 'vpc'
+    DependsOn 'lib-iam'
     Parameters do
       ComponentParam 'VPCId', type: 'AWS::EC2::VPC::Id'
       ComponentParam 'StackOctet', isGlobal: true
