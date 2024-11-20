@@ -60,7 +60,7 @@ def lambda_handler(event, context):
             logger.info(f'found instance:{response}')
 
             responseData = {}
-            responseData['Ec2InstanceIds'] = response
+            responseData['Ec2InstanceId'] = response
             logger.info('Retrieved Ec2InstanceId! ')
             cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
         else:
